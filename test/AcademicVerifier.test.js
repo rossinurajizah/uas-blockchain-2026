@@ -5,9 +5,9 @@ const { loadFixture, time } = require("@nomicfoundation/hardhat-toolbox/network-
 // Status enum: 0 None, 1 Valid, 2 Revoked
 const Status = { None: 0n, Valid: 1n, Revoked: 2n };
 
-/** Hash dokumen kanonik + salt (dihitung off-chain, sama seperti sisi verifier). */
+/** H = SHA-256(dokumen kanonik || salt 32 byte), dihitung off-chain (sama seperti UTS dan sisi verifier). */
 function docHashOf(document, salt) {
-  return ethers.keccak256(ethers.concat([ethers.toUtf8Bytes(document), salt]));
+  return ethers.sha256(ethers.concat([ethers.toUtf8Bytes(document), salt]));
 }
 /** holderRef = hash(wallet lulusan || salt) -> alamat lulusan tidak tampil di chain. */
 function holderRefOf(wallet, salt) {
