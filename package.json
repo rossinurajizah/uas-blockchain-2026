@@ -8,12 +8,14 @@
     "test": "hardhat test",
     "coverage": "hardhat coverage",
     "node": "hardhat node",
-    "deploy:local": "hardhat run scripts/deploy.js --network localhost"
+    "deploy:local": "hardhat run scripts/deploy.js --network localhost",
+    "frontend": "http-server . -p 3000 -c-1 -o /frontend/"
   },
   "license": "MIT",
   "devDependencies": {
     "@nomicfoundation/hardhat-toolbox": "^5.0.0",
     "@openzeppelin/contracts": "^5.6.1",
-    "hardhat": "^2.29.1"
+    "hardhat": "^2.29.1",
+    "http-server": "^14.1.1"
   }
 }

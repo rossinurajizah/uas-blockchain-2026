@@ -2,7 +2,7 @@
 // Hanya akun uji bawaan Hardhat. Tidak ada private key di repositori.
 const fs = require("fs");
 const path = require("path");
-const { ethers, network } = require("hardhat");
+const { ethers, network, artifacts } = require("hardhat");
 
 async function main() {
   const [admin, issuer] = await ethers.getSigners();
@@ -35,6 +35,15 @@ async function main() {
   const dir = path.join(__dirname, "..", "deployments");
   fs.mkdirSync(dir, { recursive: true });
   fs.writeFileSync(path.join(dir, `${network.name}.json`), JSON.stringify(record, null, 2));
+  // Konfigurasi untuk frontend (address + ABI; tanpa private key)
+  const art = await artifacts.readArtifact("AcademicVerifier");
+  const feDir = path.join(__dirname, "..", "frontend");
+  fs.mkdirSync(feDir, { recursive: true });
+  fs.writeFileSync(
+    path.join(feDir, "contract-config.js"),
+    "// Dibuat otomatis oleh scripts/deploy.js. Jangan diedit manual.\nwindow.CONTRACT_CONFIG = " +
+      JSON.stringify({ chainId: record.chainId, address: record.address, abi: art.abi }, null, 2) + ";\n"
+  );
   console.log(record);
 }
 

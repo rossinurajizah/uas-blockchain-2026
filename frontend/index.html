@@ -1,0 +1,107 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>AcademicVerifier - Verifikasi Kredensial Akademik</title>
+<style>
+  :root{--bg:#f6f7f9;--card:#fff;--ink:#1c2430;--mute:#5d6877;--line:#dfe3e9;--brand:#1f4e8c;--ok:#1b7f3b;--bad:#b3261e;--warn:#9a6700}
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--bg);color:var(--ink);font:15px/1.5 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif}
+  header{background:var(--brand);color:#fff;padding:18px 20px}
+  header h1{margin:0;font-size:20px} header p{margin:2px 0 0;opacity:.85;font-size:13px}
+  main{max-width:980px;margin:0 auto;padding:16px;display:grid;gap:14px}
+  section{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:16px}
+  h2{margin:0 0 10px;font-size:16px}
+  label{display:block;font-size:13px;color:var(--mute);margin:10px 0 4px}
+  input,textarea{width:100%;padding:8px 10px;border:1px solid var(--line);border-radius:6px;font:inherit;font-family:ui-monospace,Consolas,monospace;font-size:13px}
+  textarea{min-height:56px;resize:vertical}
+  button{background:var(--brand);color:#fff;border:0;border-radius:6px;padding:8px 14px;font:inherit;cursor:pointer;margin-top:10px}
+  button.sec{background:#e9eef4;color:var(--brand)} button:disabled{opacity:.45;cursor:not-allowed}
+  .row{display:flex;gap:8px;align-items:flex-end} .row>*{flex:1} .row>button{flex:none}
+  .chips span{display:inline-block;padding:2px 9px;border-radius:99px;font-size:12px;margin:2px 4px 2px 0;background:#e9eef4;color:var(--brand)}
+  .chips span.on{background:#dff3e5;color:var(--ok)} .chips span.off{background:#f1f1f1;color:#888}
+  .kv{font-size:13px;color:var(--mute);word-break:break-all} .kv b{color:var(--ink)}
+  .out{margin-top:10px;padding:10px;border-radius:6px;background:#f3f6fa;font-size:13px;word-break:break-all;display:none}
+  .out.ok{display:block;border-left:4px solid var(--ok)} .out.err{display:block;border-left:4px solid var(--bad)} .out.info{display:block;border-left:4px solid var(--brand)}
+  .badge{display:inline-block;padding:2px 10px;border-radius:99px;font-weight:600;font-size:13px}
+  .b-valid{background:#dff3e5;color:var(--ok)} .b-rev{background:#fde7e5;color:var(--bad)} .b-none{background:#fff1d6;color:var(--warn)}
+  table{width:100%;border-collapse:collapse;font-size:12.5px} th,td{text-align:left;padding:6px 8px;border-bottom:1px solid var(--line);word-break:break-all}
+  th{color:var(--mute);font-weight:600} .grid2{display:grid;grid-template-columns:1fr 1fr;gap:14px} @media(max-width:720px){.grid2{grid-template-columns:1fr}}
+  .note{font-size:12px;color:var(--mute);margin-top:6px}
+</style>
+</head>
+<body>
+<header>
+  <h1>AcademicVerifier</h1>
+  <p>Verifikasi kredensial akademik berbasis blockchain - UAS Blockchain 2026/2027 (local network, akun uji)</p>
+</header>
+<main>
+  <section id="sec-conn">
+    <h2>1. Koneksi wallet</h2>
+    <button id="btn-connect">Hubungkan wallet (MetaMask)</button>
+    <div id="conn-info" class="kv" style="margin-top:10px"></div>
+    <div id="roles" class="chips"></div>
+    <div id="out-conn" class="out"></div>
+  </section>
+
+  <div class="grid2">
+    <section>
+      <h2>2. Terbitkan kredensial <small style="font-weight:400;color:var(--mute)">(ISSUER_ROLE)</small></h2>
+      <label for="i-doc">Dokumen kanonik (teks)</label>
+      <textarea id="i-doc">IJAZAH|S1-Informatika|2026|0001</textarea>
+      <label for="i-salt">Salt (32 byte, hex)</label>
+      <div class="row"><input id="i-salt" placeholder="0x..."><button class="sec" id="btn-salt" type="button">Acak</button></div>
+      <label for="i-wallet">Wallet lulusan</label>
+      <input id="i-wallet" placeholder="0x...">
+      <div class="note">docHash = SHA-256(dokumen || salt). holderRef = keccak256(wallet || salt). Hanya hash yang dikirim ke chain.</div>
+      <div class="kv" style="margin-top:8px">docHash: <b id="i-hash">-</b></div>
+      <button id="btn-issue" disabled>Terbitkan</button>
+      <div id="out-issue" class="out"></div>
+    </section>
+
+    <section>
+      <h2>3. Verifikasi <small style="font-weight:400;color:var(--mute)">(siapa pun, baca saja)</small></h2>
+      <label for="v-doc">Dokumen yang diterima</label>
+      <textarea id="v-doc"></textarea>
+      <label for="v-salt">Salt yang diterima</label>
+      <input id="v-salt" placeholder="0x...">
+      <div class="kv" style="margin-top:8px">docHash: <b id="v-hash">-</b></div>
+      <button id="btn-verify" disabled>Verifikasi</button>
+      <div id="out-verify" class="out"></div>
+    </section>
+  </div>
+
+  <div class="grid2">
+    <section>
+      <h2>4. Cabut kredensial <small style="font-weight:400;color:var(--mute)">(penerbit asal / admin)</small></h2>
+      <label for="r-hash">docHash</label>
+      <input id="r-hash" placeholder="0x...">
+      <button id="btn-revoke" disabled>Cabut</button>
+      <div id="out-revoke" class="out"></div>
+    </section>
+    <section>
+      <h2>5. Admin <small style="font-weight:400;color:var(--mute)">(role dan pause)</small></h2>
+      <label for="a-addr">Alamat penerima ISSUER_ROLE</label>
+      <input id="a-addr" placeholder="0x...">
+      <div class="row">
+        <button id="btn-grant" disabled>Beri ISSUER_ROLE</button>
+        <button id="btn-pause" class="sec" disabled>Pause</button>
+        <button id="btn-unpause" class="sec" disabled>Unpause</button>
+      </div>
+      <div id="out-admin" class="out"></div>
+    </section>
+  </div>
+
+  <section>
+    <h2>6. Riwayat event on-chain</h2>
+    <button class="sec" id="btn-events" disabled style="margin:0 0 10px">Muat ulang</button>
+    <table><thead><tr><th>Blok</th><th>Event</th><th>docHash</th><th>Pelaku</th><th>Tx hash</th></tr></thead><tbody id="events"></tbody></table>
+  </section>
+</main>
+
+<script src="../node_modules/ethers/dist/ethers.umd.min.js"></script>
+<script src="contract-config.js"></script>
+<script src="app.js"></script>
+</body>
+</html>

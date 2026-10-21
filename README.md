@@ -12,7 +12,8 @@ Hanya **hash dokumen** dan status yang disimpan on-chain; dokumen, salt, dan dat
 |---|---|
 | `contracts/AcademicVerifier.sol` | Smart contract v2 |
 | `test/` | Unit test (Hardhat + Chai) |
-| `scripts/deploy.js` | Deploy ke local network + Deployment Record |
+| `scripts/deploy.js` | Deploy ke local network, tulis Deployment Record dan konfigurasi frontend |
+| `frontend/` | Client web sederhana (ethers.js v6 + MetaMask) |
 | `deployments/` | Hasil deploy (address, tx hash) |
 | `docs/DESIGN.md` | Keputusan desain dan perubahan v1 -> v2 |
 
@@ -30,12 +31,22 @@ npm run coverage         # laporan coverage
 
 # Deploy ke local blockchain
 npx hardhat node                  # terminal 1 (biarkan berjalan)
-npm run deploy:local              # terminal 2 -> tulis deployments/localhost.json
+npm run deploy:local              # terminal 2 -> deployments/localhost.json + frontend/contract-config.js
+npm run frontend                  # terminal 3 -> http://127.0.0.1:3000/frontend/
 ```
+
+## Menjalankan frontend dengan MetaMask (local network)
+1. Gunakan profil browser khusus uji. Tambahkan jaringan: nama `Hardhat Local`, RPC `http://127.0.0.1:8545`, Chain ID `31337`, simbol `ETH`.
+2. Impor akun uji dari keluaran `npx hardhat node` (key ini **publik dan hanya untuk local**; jangan dipakai di jaringan asli atau dikirimi dana):
+   - Account #0 = admin/pauser, Account #1 = issuer (diberi ISSUER_ROLE oleh `deploy.js`), Account #2 = contoh wallet lulusan.
+3. Buka halaman, klik **Hubungkan wallet**, lalu coba: terbitkan, verifikasi, cabut, pause.
+4. Setelah `hardhat node` dijalankan ulang: jalankan `npm run deploy:local` lagi, lalu di MetaMask pilih *Settings > Advanced > Clear activity tab data* (reset nonce).
+
+Private key tidak disimpan di repositori.
 
 ## Status pengerjaan
 - [x] Tahap 1: kontrak v2, unit test, deploy script
-- [ ] Tahap 2: frontend/client + integrasi wallet
+- [x] Tahap 2: frontend/client + integrasi wallet
 - [ ] Tahap 3: audit keamanan dan perbaikan
 - [ ] Tahap 4: evaluasi enterprise/privasi
 - [ ] Tahap 5: laporan, slide, video demo
