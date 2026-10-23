@@ -1,7 +1,7 @@
 # Audit Keamanan AcademicVerifier (Project 3)
 
-Objek audit: `contracts/AcademicVerifier.sol` v2 (commit [ISI: hash commit v2]).
-Hasil perbaikan: v3 (commit [ISI: hash commit perbaikan]). Metode: review kode manual, threat model, dan test eksploit (`test/Audit.test.js`) yang **gagal pada v2 dan lulus pada v3**.
+Objek audit: `contracts/AcademicVerifier.sol` v2 (commit 0e5c867).
+Hasil perbaikan: v3 (commit 481bb52). Metode: review kode manual, threat model, dan test eksploit (`test/Audit.test.js`) yang **gagal pada v2 dan lulus pada v3**.
 
 ## 1. Threat model ringkas
 | Unsur | Isi |
@@ -41,6 +41,6 @@ Hasil perbaikan: v3 (commit [ISI: hash commit perbaikan]). Metode: review kode m
 ## 5. Retest
 | Perintah | Hasil |
 |---|---|
-| `npm test` pada v2 + `Audit.test.js` | [ISI: jumlah passing/failing, mis. 3 passing, 10 failing] |
-| `npm test` pada v3 | [ISI: 37 passing] |
-| `npm run coverage` pada v3 | [ISI: 100% statement/branch/function/line] |
+| `npm test` pada v2 + `Audit.test.js` | 27 passing, 10 failing (bukti merah, commit 3251fa9) |
+| `npm test` pada v3 | 37 passing (commit 481bb52) |
+| `npm run coverage` pada v3 | 100% statement, branch, function, line |
