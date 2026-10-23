@@ -38,6 +38,17 @@ window.CONTRACT_CONFIG = {
     {
       "inputs": [
         {
+          "internalType": "address",
+          "name": "issuer",
+          "type": "address"
+        }
+      ],
+      "name": "AlreadyInvalidated",
+      "type": "error"
+    },
+    {
+      "inputs": [
+        {
           "internalType": "bytes32",
           "name": "docHash",
           "type": "bytes32"
@@ -70,6 +81,21 @@ window.CONTRACT_CONFIG = {
     {
       "inputs": [],
       "name": "InvalidHash",
+      "type": "error"
+    },
+    {
+      "inputs": [],
+      "name": "InvalidHolderRef",
+      "type": "error"
+    },
+    {
+      "inputs": [],
+      "name": "InvalidTimestamp",
+      "type": "error"
+    },
+    {
+      "inputs": [],
+      "name": "LastAdmin",
       "type": "error"
     },
     {
@@ -141,6 +167,31 @@ window.CONTRACT_CONFIG = {
         }
       ],
       "name": "CredentialRevoked",
+      "type": "event"
+    },
+    {
+      "anonymous": false,
+      "inputs": [
+        {
+          "indexed": true,
+          "internalType": "address",
+          "name": "issuer",
+          "type": "address"
+        },
+        {
+          "indexed": false,
+          "internalType": "uint64",
+          "name": "fromTimestamp",
+          "type": "uint64"
+        },
+        {
+          "indexed": true,
+          "internalType": "address",
+          "name": "by",
+          "type": "address"
+        }
+      ],
+      "name": "IssuerInvalidated",
       "type": "event"
     },
     {
@@ -284,6 +335,19 @@ window.CONTRACT_CONFIG = {
       "type": "function"
     },
     {
+      "inputs": [],
+      "name": "adminCount",
+      "outputs": [
+        {
+          "internalType": "uint256",
+          "name": "",
+          "type": "uint256"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
       "inputs": [
         {
           "internalType": "bytes32",
@@ -381,6 +445,24 @@ window.CONTRACT_CONFIG = {
     {
       "inputs": [
         {
+          "internalType": "address",
+          "name": "issuer",
+          "type": "address"
+        },
+        {
+          "internalType": "uint64",
+          "name": "fromTimestamp",
+          "type": "uint64"
+        }
+      ],
+      "name": "invalidateIssuer",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
           "internalType": "bytes32",
           "name": "docHash",
           "type": "bytes32"
@@ -394,6 +476,25 @@ window.CONTRACT_CONFIG = {
       "name": "issueCredential",
       "outputs": [],
       "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "address",
+          "name": "",
+          "type": "address"
+        }
+      ],
+      "name": "issuerInvalidFrom",
+      "outputs": [
+        {
+          "internalType": "uint64",
+          "name": "",
+          "type": "uint64"
+        }
+      ],
+      "stateMutability": "view",
       "type": "function"
     },
     {

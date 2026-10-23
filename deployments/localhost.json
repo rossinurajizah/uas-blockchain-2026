@@ -5,9 +5,9 @@
   "address": "0x5FbDB2315678afecb367f032d93F642f64180aa3",
   "admin": "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266",
   "issuer": "0x70997970C51812dc3A010C7d01b50e0d17dc79C8",
-  "deployTxHash": "0xef7562b86ca6e68488e37f36173afa2f0000245f946da8c89c16d59e145961f8",
+  "deployTxHash": "0x0aab328b4045b7bf9d879d4964f631fd667fae2dd3ba012a3cb529d752f2f03a",
   "deployBlock": 1,
-  "grantIssuerTxHash": "0xd41cd32173904d1dcfb5b137817874f6b1480860effd9c2dd875db96394c82ab",
+  "grantIssuerTxHash": "0xba2dcee9f7fba45eb816c5dc43e42a6bcf7399af84f246ab758f45675fe74f27",
   "grantIssuerBlock": 2,
-  "deployedAt": "2026-10-23T00:40:17.003Z"
+  "deployedAt": "2026-10-23T01:41:34.751Z"
 }
