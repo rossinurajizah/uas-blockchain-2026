@@ -16,6 +16,7 @@ Hanya **hash dokumen** dan status yang disimpan on-chain; dokumen, salt, dan dat
 | `frontend/` | Client web sederhana (ethers.js v6 + MetaMask) |
 | `deployments/` | Hasil deploy (address, tx hash) |
 | `docs/DESIGN.md` | Keputusan desain dan perubahan v1 -> v2 |
+| `docs/AUDIT.md` | Laporan audit keamanan, temuan, perbaikan (v2 -> v3), dan retest |
 
 ## Prasyarat
 Node.js >= 18 (diuji pada Node 22) dan npm. Hanya **local network** / akun uji Hardhat. Jangan memakai aset atau private key asli.
@@ -26,7 +27,7 @@ git clone https://github.com/rossinurajizah/uas-blockchain-2026.git
 cd uas-blockchain-2026
 npm install
 npm run compile
-npm test                 # 24 unit test
+npm test                 # 37 test (24 fungsional + 13 audit)
 npm run coverage         # laporan coverage
 
 # Deploy ke local blockchain
@@ -47,6 +48,6 @@ Private key tidak disimpan di repositori.
 ## Status pengerjaan
 - [x] Tahap 1: kontrak v2, unit test, deploy script
 - [x] Tahap 2: frontend/client + integrasi wallet
-- [ ] Tahap 3: audit keamanan dan perbaikan
+- [x] Tahap 3: audit keamanan dan perbaikan (lihat `docs/AUDIT.md`)
 - [ ] Tahap 4: evaluasi enterprise/privasi
 - [ ] Tahap 5: laporan, slide, video demo

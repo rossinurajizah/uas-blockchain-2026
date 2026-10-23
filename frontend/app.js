@@ -41,7 +41,13 @@ function refreshHashes() {
   try { $("v-hash").textContent = $("v-salt").value ? docHashOf($("v-doc").value, $("v-salt").value) : "-"; } catch { $("v-hash").textContent = "salt tidak valid"; }
 }
 
-async function connect() {
+let connecting = null;
+/** Hindari dua koneksi bersamaan (sambung otomatis + klik tombol). */
+function connect() {
+  if (!connecting) connecting = doConnect().finally(() => { connecting = null; });
+  return connecting;
+}
+async function doConnect() {
   try {
     if (!window.ethereum) return show("out-conn", "err", "Wallet tidak ditemukan. Pasang MetaMask.");
     await window.ethereum.request({ method: "eth_requestAccounts" });
@@ -113,7 +119,7 @@ async function verify() {
     const h = docHashOf($("v-doc").value, $("v-salt").value);
     const [valid, c] = await Promise.all([contract.verifyCredential(h), contract.getCredential(h)]);
     const st = Number(c.status);
-    const badge = st === 1 ? '<span class="badge b-valid">VALID</span>' : st === 2 ? '<span class="badge b-rev">DICABUT</span>' : '<span class="badge b-none">TIDAK TERDAFTAR</span>';
+    const badge = st === 1 ? '<span class="badge b-valid">VALID</span>' : st === 2 ? '<span class="badge b-rev">DICABUT</span>' : st === 3 ? '<span class="badge b-rev">PENERBIT DIBEKUKAN</span>' : '<span class="badge b-none">TIDAK TERDAFTAR</span>';
     let extra = "";
     if (st !== 0) extra = `<br>Penerbit: ${esc(c.issuer)}<br>Terbit: ${new Date(Number(c.issuedAt) * 1000).toLocaleString("id-ID")}` + (st === 2 ? `<br>Dicabut: ${new Date(Number(c.revokedAt) * 1000).toLocaleString("id-ID")}` : "");
     show("out-verify", valid ? "ok" : "err", `${badge} &nbsp; verifyCredential = <b>${valid}</b><br>docHash: ${esc(h)}${extra}`);
@@ -135,8 +141,11 @@ async function setPause(on) {
   if (r) show("out-admin", "ok", `${on ? "Kontrak di-pause" : "Kontrak aktif kembali"}.<br>Tx: ${esc(r.tx.hash)}`);
 }
 
+let evSeq = 0;
 async function loadEvents() {
+  const seq = ++evSeq;
   const [iss, rev] = await Promise.all([contract.queryFilter(contract.filters.CredentialIssued(), 0), contract.queryFilter(contract.filters.CredentialRevoked(), 0)]);
+  if (seq !== evSeq) return; // abaikan hasil lama bila ada pemuatan yang lebih baru
   const rows = [...iss, ...rev].sort((a, b) => b.blockNumber - a.blockNumber || b.index - a.index);
   $("events").innerHTML = rows.length ? rows.map((e) => {
     const isIssue = e.fragment.name === "CredentialIssued";
@@ -159,11 +168,12 @@ if (window.ethereum && window.ethereum.on) {
   window.ethereum.on("chainChanged", () => location.reload());
 }
 if (!CFG) $("out-conn").outerHTML = '<div class="out err">contract-config.js belum ada. Jalankan: npm run deploy:local</div>';
-   // Sambung otomatis bila wallet sudah pernah diizinkan (mis. setelah halaman reload karena ganti jaringan)
-   window.addEventListener("load", async () => {
-     try {
-       if (!window.ethereum || !CFG) return;
-       const accts = await window.ethereum.request({ method: "eth_accounts" });
-       if (accts.length) connect();
-     } catch (_) { /* abaikan; pengguna dapat menekan tombol hubungkan */ }
-   });
+
+// Sambung otomatis bila wallet sudah pernah diizinkan (mis. setelah halaman reload karena ganti jaringan/akun)
+window.addEventListener("load", async () => {
+  try {
+    if (!window.ethereum || !CFG) return;
+    const accts = await window.ethereum.request({ method: "eth_accounts" });
+    if (accts.length) connect();
+  } catch (_) { /* pengguna dapat menekan tombol hubungkan */ }
+});
