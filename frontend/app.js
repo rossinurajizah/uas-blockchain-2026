@@ -159,3 +159,11 @@ if (window.ethereum && window.ethereum.on) {
   window.ethereum.on("chainChanged", () => location.reload());
 }
 if (!CFG) $("out-conn").outerHTML = '<div class="out err">contract-config.js belum ada. Jalankan: npm run deploy:local</div>';
+   // Sambung otomatis bila wallet sudah pernah diizinkan (mis. setelah halaman reload karena ganti jaringan)
+   window.addEventListener("load", async () => {
+     try {
+       if (!window.ethereum || !CFG) return;
+       const accts = await window.ethereum.request({ method: "eth_accounts" });
+       if (accts.length) connect();
+     } catch (_) { /* abaikan; pengguna dapat menekan tombol hubungkan */ }
+   });
