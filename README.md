@@ -10,13 +10,15 @@ Hanya **hash dokumen** dan status yang disimpan on-chain; dokumen, salt, dan dat
 ## Struktur
 | Path | Isi |
 |---|---|
-| `contracts/AcademicVerifier.sol` | Smart contract v2 |
+| `contracts/AcademicVerifier.sol` | Smart contract v3 (hasil perbaikan audit) |
 | `test/` | Unit test (Hardhat + Chai) |
 | `scripts/deploy.js` | Deploy ke local network, tulis Deployment Record dan konfigurasi frontend |
 | `frontend/` | Client web sederhana (ethers.js v6 + MetaMask) |
 | `deployments/` | Hasil deploy (address, tx hash) |
 | `docs/DESIGN.md` | Keputusan desain dan perubahan v1 -> v2 |
 | `docs/AUDIT.md` | Laporan audit keamanan, temuan, perbaikan (v2 -> v3), dan retest |
+| `docs/Evaluasi_Nonfungsional_Project4.docx` | Evaluasi enterprise, privasi, dan nonfungsional (Project 4) |
+| `docs/Architecture_Diagram.png` | Diagram arsitektur |
 
 ## Prasyarat
 Node.js >= 18 (diuji pada Node 22) dan npm. Hanya **local network** / akun uji Hardhat. Jangan memakai aset atau private key asli.
@@ -45,9 +47,12 @@ npm run frontend                  # terminal 3 -> http://127.0.0.1:3000/frontend
 
 Private key tidak disimpan di repositori.
 
+## Konfigurasi dan dependensi
+Hardhat 2.29.1, hardhat-toolbox 5.0.0, ethers 6.17.0, OpenZeppelin Contracts 5.6.1, solidity-coverage 0.8.17, solc 0.8.28 (optimizer aktif, evm paris), http-server 14.1.1. Jaringan: Hardhat local, chain ID 31337, tanpa file `.env` dan tanpa private key di repositori.
+
 ## Status pengerjaan
 - [x] Tahap 1: kontrak v2, unit test, deploy script
 - [x] Tahap 2: frontend/client + integrasi wallet
 - [x] Tahap 3: audit keamanan dan perbaikan (lihat `docs/AUDIT.md`)
-- [ ] Tahap 4: evaluasi enterprise/privasi
-- [ ] Tahap 5: laporan, slide, video demo
+- [x] Tahap 4: evaluasi enterprise/privasi (`docs/Evaluasi_Nonfungsional_Project_Bagian4.docx`)
+- [x] Tahap 5: laporan, slide, video demo (dikumpulkan sebagai paket terpisah)
